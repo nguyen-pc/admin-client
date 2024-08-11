@@ -22,8 +22,8 @@
               />
             </svg>
             <router-link :to="{ name: 'authUser' }" class="text-white py-2 lg:py-0">
-              Quản lí người dùng</router-link
-            >
+              Quản lí người dùng
+            </router-link>
           </a>
           <a
             href="#"
@@ -43,8 +43,8 @@
               />
             </svg>
             <router-link :to="{ name: 'book' }" class="text-white py-2 lg:py-0">
-              Quản lí sách</router-link
-            >
+              Quản lí sách
+            </router-link>
           </a>
           <a
             href="#"
@@ -64,8 +64,8 @@
               />
             </svg>
             <router-link :to="{ name: 'publisher' }" class="text-white py-2 lg:py-0">
-              Quản lí nhà xuất bản</router-link
-            >
+              Quản lí nhà xuất bản
+            </router-link>
           </a>
 
           <a
@@ -86,8 +86,8 @@
               />
             </svg>
             <router-link :to="{ name: 'author' }" class="text-white py-2 lg:py-0">
-              Quản lí tác giả</router-link
-            >
+              Quản lí tác giả
+            </router-link>
           </a>
 
           <a
@@ -109,8 +109,8 @@
               />
             </svg>
             <router-link :to="{ name: 'borrow' }" class="text-white py-2 lg:py-0">
-              Quản lí mượn sách</router-link
-            >
+              Quản lí mượn sách
+            </router-link>
           </a>
         </nav>
       </div>

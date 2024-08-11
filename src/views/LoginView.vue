@@ -6,11 +6,22 @@
         <form @submit.prevent="submit">
           <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
-            <input v-model="loginData.email" type="email" class="form-control" id="email" autocomplete="off">
+            <input
+              v-model="loginData.email"
+              type="email"
+              class="form-control"
+              id="email"
+              autocomplete="off"
+            />
           </div>
           <div class="mb-3">
             <label for="password" class="form-label">Password</label>
-            <input v-model="loginData.password" type="password" class="form-control" id="password">
+            <input
+              v-model="loginData.password"
+              type="password"
+              class="form-control"
+              id="password"
+            />
           </div>
           <button type="submit" class="btn btn-success">Login</button>
         </form>
@@ -54,7 +65,7 @@ async function submit(){
       toast.success("Đăng nhập thành công!", {
       autoClose: 2000,
       position: toast.POSITION.BOTTOM_RIGHT,
-   } as ToastOptions)
+      } as ToastOptions)
       router.replace({name: "user"})
     })
     .catch(err => {
@@ -65,11 +76,10 @@ async function submit(){
       errorMessage.value = err.message
     })
 }
-
 </script>
 
 <style scoped>
-#login .card{
+#login .card {
   max-width: 40vw;
   margin: auto;
 }

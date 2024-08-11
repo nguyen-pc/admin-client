@@ -27,11 +27,12 @@
               <!-- Arrow icon placeholder -->
               <!-- <span class="material-icons ml-1">arrow_drop_down</span> -->
             </button>
-            <ul
+            <div
               :class="{ block: dropdownOpen, hidden: !dropdownOpen }"
-              class="absolute right-0 mt-2 bg-white shadow-md rounded-lg"
+              class="absolute right-0 mt-3 shadow-md rounded-lg w-[280px] h-[300px] bg-green-400"
             >
-              <li>
+              <Profile />
+              <!-- <li>
                 <router-link
                   :to="{ name: 'user' }"
                   class="block px-4 py-2 text-gray-800 hover:bg-gray-200"
@@ -47,8 +48,8 @@
                 >
                   Logout
                 </button>
-              </li>
-            </ul>
+              </li> -->
+            </div>
           </li>
           <template v-else>
             <div class="flex items-center mt-2 gap-3">
@@ -80,6 +81,7 @@
 import { useAuthStore } from "../stores/auth";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
+import Profile from "./Profile.vue";
 
 const authStore = useAuthStore();
 const router = useRouter();

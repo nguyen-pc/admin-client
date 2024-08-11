@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { useApi, useApiPrivate } from '../composable/useApi'
 
 export interface Borrow {
+  id: string
   user: string
   book: string
   borrowedDay: Date
