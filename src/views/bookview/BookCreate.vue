@@ -1,5 +1,5 @@
 <template>
-  <div class="p-2 mt-10">
+  <div class="p-4 mt-10">
     <router-link :to="{ name: 'home' }">
       <div class="mb-2 ml-4 text-lg font-semibold cursor-pointer hover:text-gray-500">
         Trang chủ

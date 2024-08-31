@@ -2,7 +2,7 @@
   <nav class="bg-blue-200 h-16 fixed w-full top-0 z-1 border-b-2">
     <div class="container mx-auto flex justify-between items-center h-full">
       <router-link class="text-white text-lg font-bold" :to="{ name: 'home' }">
-        Navbar
+        <img src="../assets/images/logo.png" class="w-[50px] h-[50px] rounded-full"  @click="navigateToBorrow"/>
       </router-link>
       <button @click="toggleNavbar" class="text-white block lg:hidden">
         <span class="material-icons">menu</span>
@@ -18,12 +18,12 @@
           </li> -->
         </ul>
         <ul class="flex flex-col lg:flex-row lg:space-x-4 lg:mt-0 mr-64">
-          <li v-if="isAuthenticated" class="relative">
+          <li v-if="isAuthenticated" class="relative top-[8px]">
             <button
               @click="toggleDropdown"
-              class="text-black py-2 mt-1 bg-red-100 w-[50px] h-[50px] text-sm text-center rounded-full lg:py-0 flex items-center"
+              class="text-black py-2 bg-red-100 w-[50px] h-[50px] text-sm text-center rounded-full lg:py-0 flex items-center"
             >
-              {{ user.username }}
+              <span class="text-gray-600">{{ user.first_name }}</span>
               <!-- Arrow icon placeholder -->
               <!-- <span class="material-icons ml-1">arrow_drop_down</span> -->
             </button>
@@ -79,14 +79,26 @@
 
 <script setup lang="ts">
 import { useAuthStore } from "../stores/auth";
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import Profile from "./Profile.vue";
 
 const authStore = useAuthStore();
 const router = useRouter();
 
-const user = computed(() => authStore.user);
+const user = computed(() => {
+  return authStore.userDetail;
+});
+
+async function getUser() {
+  await authStore.getUser();
+}
+console.log(user);
+
+onMounted(async () => {
+  await getUser();
+});
+
 const isAuthenticated = computed(() => authStore.isAuthenticated);
 
 const navbarOpen = ref(false);
@@ -110,4 +122,9 @@ async function logout() {
       console.log(err.message);
     });
 }
+
+function navigateToBorrow(){
+  window.location.replace("http://localhost:5173/")
+}
+
 </script>
