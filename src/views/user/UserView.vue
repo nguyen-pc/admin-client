@@ -78,7 +78,7 @@ import { useAuthStore } from "../../stores/auth";
 import { toast, type ToastOptions } from 'vue3-toastify';
 const authStore = useAuthStore();
 const users = computed(() => {
-  return authStore.userDetail;
+  return authStore.allUser;
 });
 
 // async function getAllUser() {
@@ -98,6 +98,7 @@ const fetchUser = async () => {
 
 onMounted(fetchUser);
 const array = users.value;
+console.log(array)
 
 const query = ref("");
 const columns = [

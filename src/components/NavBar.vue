@@ -1,5 +1,5 @@
 <template>
-  <nav class="bg-blue-500 h-16 fixed w-full top-0 z-50">
+  <nav class="bg-blue-200 h-16 fixed w-full top-0 z-1 border-b-2">
     <div class="container mx-auto flex justify-between items-center h-full">
       <router-link class="text-white text-lg font-bold" :to="{ name: 'home' }">
         Navbar
@@ -29,7 +29,7 @@
             </button>
             <div
               :class="{ block: dropdownOpen, hidden: !dropdownOpen }"
-              class="absolute right-0 mt-3 shadow-md rounded-lg w-[280px] h-[300px] bg-green-400"
+              class="absolute right-0 mt-3 shadow-md rounded-lg w-[280px] h-[300px] bg-green-400 z-100"
             >
               <Profile />
               <!-- <li>

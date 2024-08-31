@@ -1,9 +1,9 @@
 <template>
-  <div id="user">
-    <div class="flex justify-center items-center bg-gray-800">
+  <div id="user" class="z-100">
+    <div class="flex justify-center items-center bg-gray-700 rounded-lg">
       <Suspense>
         <template #default>
-          <div class="bg-gray-800 text-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+          <div class="bg-gray-700 text-white p-6 rounded-lg shadow-lg w-full max-w-sm">
             <div class="flex flex-col items-center">
               <div
                 class="bg-green-400 text-lg font-semibold py-2 px-4 rounded-md text-center mt-3"
@@ -19,7 +19,7 @@
                 {{ user.email }}
               </div>
               <div class="font-medium mt-2">Admin</div>
-              <hr class="my-4 border-gray-600 w-full" />
+              <hr class="my-4 border-gray-500 w-full" />
               <button
                 @click="editUser(user)"
                 class="w-full text-center px-4 py-2 text-red-600 hover:bg-gray-200 rounded-md transition-colors"

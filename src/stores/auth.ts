@@ -11,6 +11,7 @@ export interface User {
   first_name: string
   last_name: string
   full_name?: string
+  key: string
 }
 
 export interface State {
@@ -119,7 +120,7 @@ export const useAuthStore = defineStore('auth', {
     async getAllUser() {
       try {
         const { data } = await useApiPrivate().get(`/api/auth/getAllUser`)
-        this.user = data
+        this.users = data
         return data
       } catch (error: Error | any) {
         throw error.message

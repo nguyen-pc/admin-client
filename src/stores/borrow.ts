@@ -11,7 +11,7 @@ export interface Borrow {
 }
 
 export interface State {
-  borrows: Borrow[]
+  borrows:  Borrow[]
   accessToken: string
   authReady: boolean
 }
@@ -26,12 +26,12 @@ export const useBorrowStore = defineStore('borrow', {
   },
 
   getters: {
-    allBooks: (state: State) => state.borrows,
+    allBorrow: (state: State) => state.borrows,
     isAuthenticated: (state: State) => (state.accessToken ? true : false)
   },
 
   actions: {
-    async getAllBooks() {
+    async getAllBorrows() {
       try {
         const { data } = await useApi().get('/api/borrow/allborrow')
         this.borrows = data

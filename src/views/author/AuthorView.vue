@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 mt-10">
+  <div class="p-4 mt-10 mr-2">
     <div class="mb-2 text-lg font-semibold">Trang chủ</div>
     <h5 class="mb-3 text-xl font-bold">Quản lí Tác giả</h5>
     <div class="flex justify-between mb-4">
@@ -92,7 +92,7 @@ const fetchAuthor = async () => {
 };
 
 onMounted(fetchAuthor);
-console.log();
+
 
 const filteredData = computed(() => {
   if (!query.value) {

@@ -79,7 +79,7 @@ const borrowStore = useBorrowStore();
 const query = ref("");
 
 const columns = [
-  { title: "Tên username", dataIndex: "user.username", key: "user" },
+  { title: "Tên username", dataIndex: "user.username", key: "user._id" },
   { title: "Tên sách", dataIndex: "book.name", key: "book" },
   { title: "Ngày mượn", dataIndex: "borrowedDay", key: "borrowedDay" },
   { title: "Hạn trả", dataIndex: "estimatedReturnDate", key: "estimatedReturnDate" },
@@ -88,7 +88,7 @@ const columns = [
 
 const fetchBorrow = async () => {
   try {
-    await borrowStore.getAllBooks();
+    await borrowStore.getAllBorrows();
   } catch (error) {
     console.error("Error fetching books:", error);
   }
@@ -96,13 +96,20 @@ const fetchBorrow = async () => {
 
 onMounted(fetchBorrow);
 
+
 const filteredData = computed(() => {
   if (!query.value) {
-    return borrowStore.allBooks;
+    return borrowStore.allBorrow;
   }
-  return borrowStore.allBooks.filter((item: any) => {
-    return Object.values(item).some((value) =>
-      String(value).toLowerCase().includes(query.value.toLowerCase())
+  const searchQuery = query.value.toLowerCase();
+  return borrowStore.allBorrow.filter((item: any) => {
+    // Access the nested properties safely
+    const bookName = item.book?.name?.toLowerCase() || "";
+    const username = item.user?.username?.toLowerCase() || "";
+
+    // Check if either the book name or the username matches the search query
+    return (
+      bookName.includes(searchQuery) || username.includes(searchQuery)
     );
   });
 });

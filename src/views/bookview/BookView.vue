@@ -95,6 +95,7 @@ const fetchBooks = async () => {
   }
 };
 
+
 onMounted(fetchBooks);
 
 const filteredData = computed(() => {
@@ -107,6 +108,8 @@ const filteredData = computed(() => {
     );
   });
 });
+
+
 
 const renderCell = (row: any, column: any) => {
   const keys = column.dataIndex.split(".");
