@@ -110,6 +110,12 @@ const router = createRouter({
       name: 'register',
       component: () => import('../views/auth/RegisterView.vue'),
       meta: { requiresGuest: true }
+    },
+
+    {
+      path: '/:pathMath(.*)',
+      name: 'notfound',
+      component: () => import('../views/NotFoundView.vue')
     }
     // {
     //   path: '/user',
