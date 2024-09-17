@@ -21,199 +21,143 @@
         </div>
       </router-link>
     </div>
-    <div>
-      <template v-if="array.length == 0">
-        <div>Không có người dùng nào</div>
-      </template>
-      <template v-else>
-        <table class="min-w-full border-collapse block md:table">
-          <thead class="block md:table-header-group">
-            <tr
-              class="border border-gray-300 md:border-none block md:table-row absolute -top-full md:top-auto -left-full md:left-auto md:relative"
-            >
-              <th
-                v-for="column in columns"
-                :key="column.key"
-                class="bg-gray-200 p-2 text-gray-600 font-bold block md:table-cell"
-              >
-                {{ column.title }}
-              </th>
-              <th class="bg-gray-200 p-2 text-gray-600 font-bold block md:table-cell">
-                Hành động
-              </th>
-            </tr>
-          </thead>
-          <tbody class="block md:table-row-group">
-            <tr
-              v-for="row in filteredData"
-              :key="row.key"
-              class="bg-gray-100 border border-gray-300 md:border-none block md:table-row"
-            >
-              <td
-                v-for="column in columns"
-                :key="column.key"
-                class="p-2 text-gray-800 block md:table-cell"
-              >
-                {{ renderCell(row, column) }}
-              </td>
-              <td class="p-2 text-gray-800 block md:table-cell">
-                <button @click="editUser(row)" class="mr-2 text-blue-500">Sửa</button>
-                <button @click="deleteUser(row)" class="text-red-500">Xóa</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </template>
-    </div>
+
+    <div v-if="array.length === 0">Không có người dùng nào</div>
+    <table v-else class="min-w-full border-collapse block md:table">
+      <thead class="block md:table-header-group">
+        <tr class="bg-gray-200 p-2 text-gray-600 font-bold block md:table-row">
+          <th v-for="column in columns" :key="column.key" class="p-2">{{ column.title }}</th>
+          <th class="p-2">Hành động</th>
+        </tr>
+      </thead>
+      <tbody class="block md:table-row-group">
+        <tr v-for="row in filteredData" :key="row._id" class="bg-gray-100 p-2">
+          <td v-for="column in columns" :key="column.key">{{ renderCell(row, column) }}</td>
+          <td>
+            <button @click="editUser(row)" class="mr-2 text-blue-500">Sửa</button>
+            <button @click="deleteUser(row)" class="text-red-500">Xóa</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <nav aria-label="Pagination" class="mt-4 flex justify-center">
+      <ul class="pagination flex gap-2">
+        <li>
+          <button
+            :disabled="pageNumber === 1"
+            @click="changePage(pageNumber - 1)"
+            class="bg-gray-200 p-2 rounded"
+          >
+            Trước
+          </button>
+        </li>
+        <li v-for="page in totalPage" :key="page" :class="{ 'font-bold': page === pageNumber }">
+          <button @click="changePage(page)" class="p-2 bg-gray-200 rounded">{{ page }}</button>
+        </li>
+        <li>
+          <button
+            :disabled="pageNumber === totalPage"
+            @click="changePage(pageNumber + 1)"
+            class="bg-gray-200 p-2 rounded"
+          >
+            Sau
+          </button>
+        </li>
+      </ul>
+    </nav>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router";
-const router = useRouter();
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useAuthStore } from "../../stores/auth";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faSearch, faUserPlus } from "@fortawesome/free-solid-svg-icons";
-import { useAuthStore } from "../../stores/auth";
 import { toast, type ToastOptions } from 'vue3-toastify';
-const authStore = useAuthStore();
-const users = computed(() => {
-  return authStore.allUser;
-});
 
-// async function getAllUser() {
-//   await authStore.getAllUser();
-// }
-// onMounted(async () => {
-//   await getAllUser();
-// });
+const router = useRouter();
+const route = useRoute();
+const authStore = useAuthStore();
+const query = ref("");
+const columns = [
+  { title: "Họ", dataIndex: "last_name", key: "last_name" },
+  { title: "Tên", dataIndex: "first_name", key: "first_name" },
+  { title: "Số điện thoại", key: "phoneNumber", dataIndex: "phoneNumber" },
+  { title: "Địa chỉ", dataIndex: "address", key: "address" },
+  { title: "Giới tính", dataIndex: "gender", key: "gender" },
+  { title: "Loại tài khoản", dataIndex: "isStaff", key: "isStaff" },
+];
+
+// Fetch data on route query changes
+const pageNumber = computed(() => Number(route.query.pageNumber) || 1);
+const limit = 5;
 
 const fetchUser = async () => {
   try {
-    await authStore.getAllUser();
+    await authStore.getAllUser(pageNumber.value-1, limit); // Assuming `getAllUser` accepts page and limit (pageNumber.value, limit)
   } catch (error) {
-    console.error("Error fetching publishers:", error);
+    console.error("Error fetching users:", error);
   }
 };
 
 onMounted(fetchUser);
-const array = users.value;
-console.log(array)
+watch(() => route.query, fetchUser, { immediate: true });
 
-const query = ref("");
-const columns = [
-  {
-    title: "Họ",
-    dataIndex: "last_name",
-    key: "last_name",
-    width: 150,
-  },
-  {
-    title: "Tên",
-    dataIndex: "first_name",
-    key: "first_name",
-    width: 150,
-  },
-  {
-    title: "Số điện thoại",
-    key: "phoneNumber",
-    dataIndex: "phoneNumber",
-  },
-  {
-    title: "Địa chỉ",
-    dataIndex: "address",
-    key: "address",
-  },
-  {
-    title: "Giới tính",
-    dataIndex: "gender",
-    key: "gender",
-  },
-  {
-    title: "Loại tài khoản",
-    dataIndex: "isStaff",
-    key: "isStaff",
-  },
-];
+// Users data and pagination
+const users = computed(() => authStore.allUser);
+const array = computed(() => users.value.data || []);
+const totalPage = computed(() => users.value.totalPage || 1);
+
+// Filter data based on search query
+const filteredData = computed(() => {
+  if (!query.value) return array.value;
+  return array.value.filter((item: any) =>
+    Object.values(item).some((val) =>
+      String(val).toLowerCase().includes(query.value.toLowerCase())
+    )
+  );
+});
+
+// Handle page change
+const changePage = (newPage: number) => {
+  if (newPage >= 1 && newPage <= totalPage.value) {
+    router.push({ path: 'users', query: { pageNumber: newPage, limit } });
+  }
+};
+
+// Handle edit and delete
+const editUser = (user: any) => {
+  router.push({ name: "authUser:edit", params: { id: user._id } });
+};
+
+const deleteUser = async (user: any) => {
+  const confirmed = confirm(`Bạn có chắc chắn muốn xóa người dùng ${user.first_name} ${user.last_name}?`);
+  if (confirmed) {
+    try {
+      await authStore.deleteUser(user._id);
+      toast.success("Xóa người dùng thành công!", { autoClose: 2000, position: toast.POSITION.BOTTOM_RIGHT });
+      fetchUser();
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      toast.error("Xóa người dùng thất bại!", { autoClose: 2000, position: toast.POSITION.BOTTOM_RIGHT });
+    }
+  }
+};
 
 const updateQuery = (event: any) => {
   query.value = event.target.value;
 };
 
-const filteredData = computed(() => {
-  if (!query.value) {
-    return array;
-  }
-  return array.filter((item: any) => {
-    return Object.values(item).some((value) =>
-      String(value).toLowerCase().includes(query.value.toLowerCase())
-    );
-  });
-});
-// const filteredData = computed(() => {
-//   if (!query.value) {
-//     return authStore.allUser;
-//   }
-//   return authStore.allUser.filter((item: any) => {
-//     return Object.values(item).some((value) =>
-//       String(value).toLowerCase().includes(query.value.toLowerCase())
-//     );
-//   });
-// });
-
 const renderCell = (row: any, column: any) => {
-  if (column.dataIndex === "isStaff") {
-    return row.isStaff ? "Admin" : "Khách";
-  }
-  if (column.dataIndex === "gender") {
-    if (row.gender === "1") {
-      return (row.gender = "Nam");
-    }
-    if (row.gender === "2") {
-      return (row.gender = "Nữ");
-    }
-  }
+  if (column.dataIndex === "isStaff") return row.isStaff ? "Admin" : "Khách";
+  if (column.dataIndex === "gender") return row.gender === "1" ? "Nam" : "Nữ";
   return row[column.dataIndex];
 };
-const editUser = (user: any) => {
-  console.log(user._id);
-  router.push({ name: "authUser:edit", params: { id: user._id } });
-};
-
-// const deleteUser = (user: any) => {
-//   if (
-//     confirm(`Bạn có chắc chắn muốn xóa người dùng ${user.first_name} ${user.last_name}?`)
-//   ) {
-//     authStore.deleteUser(user._id).then(() => {
-//       router.replace({ name: "users" });
-//       getAllUser();
-//     });
-//   }
-// };
-const deleteUser = async (user: any) => {
-  const confirmed = confirm(
-    `Bạn có chắc chắn muốn xóa người dùng ${user.first_name} ${user.last_name}?`
-  );
-  if (confirmed) {
-    try {
-      await authStore.deleteUser(user._id);
-      toast.success("Xóa người dùng thành công!", {
-      autoClose: 2000,
-      position: toast.POSITION.BOTTOM_RIGHT,
-   } as ToastOptions)
-      // await authStore.getAllUser(); // Cập nhật lại danh sách người dùng sau khi xóa
-      await fetchUser();
-      // router.replace({ name: "users" }); // Điều hướng đến trang danh sách người dùng
-    } catch (error) {
-      console.error("Error deleting user:", error);
-      toast.error("Xóa người dùng thành công!", {
-      autoClose: 2000,
-      position: toast.POSITION.BOTTOM_RIGHT,
-   } as ToastOptions)
-    }
-  }
-};
 </script>
+
 
 <style scoped>
 table {

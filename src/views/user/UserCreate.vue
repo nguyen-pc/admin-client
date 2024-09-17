@@ -186,7 +186,7 @@ async function submit() {
     } else {
       await authStore.createUser(formData);
     }
-    router.replace({ name: "users" });
+    router.replace({ path: "/users" });
   } catch (err:any) {
     errorMessage.value = err.message;
   }

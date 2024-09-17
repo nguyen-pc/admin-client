@@ -17,6 +17,9 @@ export interface User {
 export interface State {
   user: User
   users: User[]
+  totalUsers: number
+  totalPages: number
+  currentPage: number
   accessToken: string
   authReady: boolean
 }
@@ -54,6 +57,9 @@ export const useAuthStore = defineStore('auth', {
     return {
       user: {} as User,
       users: [] as User[],
+      totalUsers: 0,
+      totalPages: 0,
+      currentPage: 1,
       accessToken: '' as string,
       authReady: false as boolean
     }
@@ -70,7 +76,7 @@ export const useAuthStore = defineStore('auth', {
       try {
         await this.refresh()
         await this.getUser()
-        await this.getAllUser()
+        await this.getAllUser(this.currentPage, 10)
       } catch (error) {
         return
       }
@@ -117,9 +123,18 @@ export const useAuthStore = defineStore('auth', {
         throw error.message
       }
     },
-    async getAllUser() {
+    async getAllUser(pageNumber: number, limit: number) {
+      console.log(pageNumber, limit)
       try {
-        const { data } = await useApiPrivate().get(`/api/auth/getAllUser`)
+        const { data } = await useApiPrivate().get(`/api/auth/getAllUser`, {
+          params: {
+            pageNumber: pageNumber, // pass the pageNumber
+            limit: limit // pass the limit
+          }
+        })
+        this.totalUsers = data.totalUsers
+        this.totalPages = data.totalPages
+        this.currentPage = data.currentPage
         this.users = data
         return data
       } catch (error: Error | any) {
@@ -146,7 +161,7 @@ export const useAuthStore = defineStore('auth', {
     async deleteUser(userId: number) {
       try {
         await useApiPrivate().delete(`/api/auth/user/${userId}`)
-        await this.getAllUser()
+        await this.getAllUser(1, 10)
       } catch (error: any) {
         throw new Error(error.message)
       }
@@ -155,7 +170,7 @@ export const useAuthStore = defineStore('auth', {
     async updateUser(userId: string, userData: any) {
       try {
         await useApiPrivate().put(`/api/auth/user/${userId}`, userData)
-        await this.getAllUser()
+        await this.getAllUser(1, 10)
       } catch (error: Error | any) {
         throw error.message
       }
