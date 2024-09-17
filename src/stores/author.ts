@@ -10,6 +10,9 @@ export interface Author {
 export interface State {
   author: Author[]
   accessToken: string
+  totalUsers: number
+  totalPages: number
+  currentPage: number
   authReady: boolean
 }
 
@@ -18,6 +21,9 @@ export const useAuthorStore = defineStore('author', {
     return {
       author: [] as Author[],
       accessToken: '' as string,
+      totalUsers: 0,
+      totalPages: 0,
+      currentPage: 1,
       authReady: false as boolean
     }
   },
@@ -28,9 +34,18 @@ export const useAuthorStore = defineStore('author', {
   },
 
   actions: {
-    async getAllAuthors() {
+    async getAllAuthors(pageNumber: number, limit: number) {
       try {
-        const { data } = await useApi().get('/api/author/allAuthor')
+        const { data } = await useApi().get('/api/author/allAuthor', {
+          params: {
+            pageNumber: pageNumber, // pass the pageNumber
+            limit: limit // pass the limit
+          }
+        })
+
+        this.totalUsers = data.totalUsers
+        this.totalPages = data.totalPages
+        this.currentPage = data.currentPage
         this.author = data
         return data
       } catch (error: Error | any) {
@@ -59,7 +74,7 @@ export const useAuthorStore = defineStore('author', {
     async updateAuthor(authorId: string, authorData: any) {
       try {
         await useApiPrivate().put(`/api/author/update/${authorId}`, authorData)
-        await this.getAllAuthors()
+        await this.getAllAuthors(1, 10)
       } catch (error: Error | any) {
         throw error.message
       }
@@ -67,7 +82,8 @@ export const useAuthorStore = defineStore('author', {
     async deleteAuthor(id: string) {
       try {
         await useApiPrivate().delete(`/api/author/delete/${id}`)
-        this.author = this.author.filter((p) => p.id !== id)
+        await this.getAllAuthors(1, 5)
+        // this.author = this.author.filter((p) => p.id !== id)
       } catch (error: Error | any) {
         throw error.message
       }

@@ -161,7 +161,7 @@ export const useAuthStore = defineStore('auth', {
     async deleteUser(userId: number) {
       try {
         await useApiPrivate().delete(`/api/auth/user/${userId}`)
-        await this.getAllUser(1, 10)
+        await this.getAllUser(1, 5)
       } catch (error: any) {
         throw new Error(error.message)
       }
