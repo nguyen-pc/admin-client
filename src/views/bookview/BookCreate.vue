@@ -161,8 +161,13 @@ const publishers = ref<Publisher[]>([]);
 
 onMounted(async () => {
   try {
-    authors.value = await authorStore.getAllAuthors(); // Lấy danh sách tác giả từ cơ sở dữ liệu
-    publishers.value = await publisherStore.getAllPublishers(); // Lấy danh sách nhà xuất bản từ cơ sở dữ liệu
+   const author = await authorStore.getAllAuthors(0,20);
+   const publisher =  await publisherStore.getAllPublishers(0,20);
+    // authors.value= await authorStore.getAllAuthors(0,10); // Lấy danh sách tác giả từ cơ sở dữ liệu
+    // publishers.value = await publisherStore.getAllPublishers(); // Lấy danh sách nhà xuất bản từ cơ sở dữ liệu
+    authors.value = author.data
+    publishers.value = publisher.data
+    console.log(authors.value)
 
     if (isEdit.value) {
       const book = await bookStore.getBookById(route.params.id);

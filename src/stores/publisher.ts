@@ -11,6 +11,9 @@ export interface State {
   publishers: Publisher[]
   accessToken: string
   authReady: boolean
+  totalUsers: number
+  totalPages: number
+  currentPage: number
 }
 
 export const usePublisherStore = defineStore('publisher', {
@@ -18,6 +21,9 @@ export const usePublisherStore = defineStore('publisher', {
     return {
       publishers: [] as Publisher[],
       accessToken: '' as string,
+      totalUsers: 0,
+      totalPages: 0,
+      currentPage: 1,
       authReady: false as boolean
     }
   },
@@ -28,11 +34,21 @@ export const usePublisherStore = defineStore('publisher', {
   },
 
   actions: {
-    async getAllPublishers() {
+    async getAllPublishers(pageNumber: number, limit: number) {
       try {
-        const { data } = await useApi().get('/api/publisher/allPublisher')
+        const { data } = await useApi().get('/api/publisher/allPublisher', {
+          params: {
+            pageNumber: pageNumber, // pass the pageNumber
+            limit: limit // pass the limit
+          }
+        })
+
+        this.totalUsers = data.totalUsers
+        this.totalPages = data.totalPages
+        this.currentPage = data.currentPage
         this.publishers = data
         return data
+
       } catch (error: Error | any) {
         throw error.message
       }
@@ -59,7 +75,7 @@ export const usePublisherStore = defineStore('publisher', {
     async updatePublisher(publisherId: string, publisherData: any) {
       try {
         await useApiPrivate().put(`/api/publisher/publisherId/${publisherId}`, publisherData)
-        await this.getAllPublishers()
+        await this.getAllPublishers(1,5)
       } catch (error: Error | any) {
         throw error.message
       }
@@ -67,7 +83,8 @@ export const usePublisherStore = defineStore('publisher', {
     async deletePublisher(id: string) {
       try {
         await useApiPrivate().delete(`/api/publisher/${id}`)
-        this.publishers = this.publishers.filter((p) => p.id !== id)
+        await this.getAllPublishers(1, 5)
+        // this.publishers = this.publishers.filter((p) => p.id !== id)
       } catch (error: Error | any) {
         throw error.message
       }
