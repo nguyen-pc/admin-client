@@ -113,7 +113,8 @@ export const useBookStore = defineStore('book', {
     async deleteBook(bookId: string) {
       try {
         await useApiPrivate().delete(`/api/book/bookId/${bookId}`)
-        this.books = this.books.filter((book) => book.id !== bookId)
+        await this.getAllBooks(1, 5)
+        // this.books = this.books.filter((book) => book.id !== bookId)
       } catch (error: Error | any) {
         throw error.message
       }
