@@ -14,6 +14,9 @@ export interface Book {
 
 export interface State {
   books: Book[]
+  totalUsers: number
+  totalPages: number
+  currentPage: number
   accessToken: string
   authReady: boolean
 }
@@ -23,6 +26,9 @@ export const useBookStore = defineStore('book', {
     return {
       books: [] as Book[],
       accessToken: '' as string,
+      totalUsers: 0,
+      totalPages: 0,
+      currentPage: 1,
       authReady: false as boolean
     }
   },
@@ -33,9 +39,17 @@ export const useBookStore = defineStore('book', {
   },
 
   actions: {
-    async getAllBooks() {
+    async getAllBooks(pageNumber: number, limit: number) {
       try {
-        const { data } = await useApi().get('/api/book/allbook')
+        const { data } = await useApi().get('/api/book/allbook', {
+          params: {
+            pageNumber: pageNumber, // pass the pageNumber
+            limit: limit // pass the limit
+          }
+        })
+        this.totalUsers = data.totalUsers
+        this.totalPages = data.totalPages
+        this.currentPage = data.currentPage
         this.books = data
         return data
       } catch (error: Error | any) {
@@ -56,7 +70,7 @@ export const useBookStore = defineStore('book', {
       console.log(bookData)
       try {
         const { data } = await useApi().post('/api/book/create', bookData)
-        await this.getAllBooks()
+        await this.getAllBooks(0, 10)
         return data
       } catch (error: Error | any) {
         throw error.message
@@ -69,7 +83,7 @@ export const useBookStore = defineStore('book', {
         await useApiPrivate().put(`/api/book/bookId/${bookId}`, bookData)
 
         // Cuối cùng, sau khi cập nhật thành công, gọi lại action getAllBooks để cập nhật danh sách sách mới
-        await this.getAllBooks()
+        await this.getAllBooks(0, 10)
       } catch (error: Error | any) {
         throw error.message
       }

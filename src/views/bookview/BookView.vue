@@ -64,17 +64,45 @@
         </table>
       </template>
     </div>
+      <!-- Pagination -->
+      <nav aria-label="Pagination" class="mt-4 flex justify-center">
+      <ul class="pagination flex gap-2">
+        <li>
+          <button
+            :disabled="pageNumber === 1"
+            @click="changePage(pageNumber - 1)"
+            class="bg-gray-200 p-2 rounded"
+          >
+            Trước
+          </button>
+        </li>
+        <li v-for="page in totalPage" :key="page" :class="{ 'font-bold': page === pageNumber }">
+          <button @click="changePage(page)" class="p-2 bg-gray-200 rounded">{{ page }}</button>
+        </li>
+        <li>
+          <button
+            :disabled="pageNumber === totalPage"
+            @click="changePage(pageNumber + 1)"
+            class="bg-gray-200 p-2 rounded"
+          >
+            Sau
+          </button>
+        </li>
+      </ul>
+    </nav>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted, computed } from "vue";
 import { useBookStore } from "../../stores/book";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faSearch, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { toast, type ToastOptions } from 'vue3-toastify';
+import { watch } from "vue";
 const router = useRouter();
+const route = useRoute();
 const bookStore = useBookStore();
 const query = ref("");
 
@@ -86,10 +114,13 @@ const columns = [
   { title: "Tác giả", dataIndex: "author.name", key: "author" },
   { title: "Nhà xuất bản", dataIndex: "publisher.name", key: "publisher" },
 ];
+// Fetch data on route query changes
+const pageNumber = computed(() => Number(route.query.pageNumber) || 1);
+const limit = 5;
 
 const fetchBooks = async () => {
   try {
-    await bookStore.getAllBooks();
+    await bookStore.getAllBooks(pageNumber.value-1, limit);
   } catch (error) {
     console.error("Error fetching books:", error);
   }
@@ -97,18 +128,31 @@ const fetchBooks = async () => {
 
 
 onMounted(fetchBooks);
+watch(() => route.query, fetchBooks, { immediate: true });
+
+// Users data and pagination
+const book = computed(() => bookStore.allBooks);
+const array = computed(() => book.value.data || []);
+const totalPage = computed(() => book.value.totalPage || 1);
+
 
 const filteredData = computed(() => {
   if (!query.value) {
-    return bookStore.allBooks;
+    return array.value;
   }
-  return bookStore.allBooks.filter((item: any) => {
+  return array.value.filter((item: any) => {
     return Object.values(item).some((value) =>
       String(value).toLowerCase().includes(query.value.toLowerCase())
     );
   });
 });
 
+// Handle page change
+const changePage = (newPage: number) => {
+  if (newPage >= 1 && newPage <= totalPage.value) {
+    router.push({ path: 'books', query: { pageNumber: newPage, limit } });
+  }
+};
 
 
 const renderCell = (row: any, column: any) => {

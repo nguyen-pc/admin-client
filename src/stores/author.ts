@@ -74,7 +74,7 @@ export const useAuthorStore = defineStore('author', {
     async updateAuthor(authorId: string, authorData: any) {
       try {
         await useApiPrivate().put(`/api/author/update/${authorId}`, authorData)
-        await this.getAllAuthors(1, 10)
+        await this.getAllAuthors(0, 10)
       } catch (error: Error | any) {
         throw error.message
       }

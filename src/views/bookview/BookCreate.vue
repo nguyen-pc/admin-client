@@ -63,7 +63,11 @@
               class="w-full px-3 py-2 border rounded"
               id="author"
             >
-              <option v-for="author in authors" :key="author._id" :value="author._id">
+              <option
+                v-for="author in authors"
+                :key="(author as any)._id as any"
+                :value="(author as any)._id"
+              >
                 {{ author.name }}
               </option>
             </select>
@@ -86,6 +90,12 @@
           </div>
           <div class="mb-4">
             <label for="cover" class="block text-gray-700">Ảnh bìa</label>
+            <img
+              v-if="isEdit && coverImageUrl"
+              :src="`http://localhost:3500/uploads/${coverImageUrl}`"
+              alt="Book cover"
+              class="mb-2 max-w-xs"
+            />
             <file-pond
               ref="pond"
               name="cover"
@@ -170,14 +180,17 @@ onMounted(async () => {
     console.log(authors.value)
 
     if (isEdit.value) {
-      const book = await bookStore.getBookById(route.params.id);
+      const book = await bookStore.getBookById(route.params.id as string);
+      console.log(book)
       formData.name = book.name;
       formData.unitCost = book.unitCost;
       formData.number = book.number;
       formData.publishYear = book.publishYear;
-      formData.author = book.author.id;
-      formData.publisher = book.publisher.id;
+      formData.author = book.author._id;
+      formData.publisher = book.publisher._id;
+
       coverImageUrl.value = book.cover; // Gán URL ảnh bìa nếu có
+      console.log(book.cover)
     }
   } catch (error) {
     console.error("Error fetching data:", error);
