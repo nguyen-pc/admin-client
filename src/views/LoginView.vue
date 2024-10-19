@@ -1,7 +1,7 @@
 <template>
-  <div id="login">
+  <div id="login" class="background">
     <div class="container">
-      <div class="card card-body mt-4">
+      <div class="card card-body mt-5">
         <h5 class="card-title">Login</h5>
         <form @submit.prevent="submit">
           <div class="mb-3">
@@ -81,6 +81,22 @@ async function submit(){
 <style scoped>
 #login .card {
   max-width: 40vw;
+  width: 100%;
   margin: auto;
+}
+
+.background {
+  background-image: url("background_login.jpg");
+  background-size: cover;
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat;
+  height: 100vh;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }
 </style>
