@@ -5,6 +5,7 @@ export interface Author {
   id: string
   name: string
   address: string
+  detail: string
 }
 
 export interface State {

@@ -94,7 +94,7 @@ export const useBookStore = defineStore('book', {
         // Tạo đối tượng FormData để chứa dữ liệu của ảnh
         const formData = new FormData()
         formData.append('cover', coverFile)
-
+        // console.log(formData)
         // Gửi yêu cầu POST đến endpoint '/api/book/uploadCover/' để tải lên ảnh bìa
         const { data } = await useApi().post('/api/book/uploadCover/', formData, {
           headers: {

@@ -37,6 +37,17 @@
             />
           </div>
 
+          <div class="mb-4">
+            <label for="detail" class="block text-gray-700">Tóm tắt</label>
+            <input
+              v-model="formData.detail"
+              type="text"
+              class="w-full px-3 py-2 border rounded"
+              id="first_name"
+              autocomplete="off"
+            />
+          </div>
+
           <button type="submit" class="w-full bg-green-500 text-white py-2 rounded">
             {{ isEdit ? "Cập nhật" : "Tạo" }}
           </button>
@@ -58,7 +69,8 @@ const authorStore = useAuthorStore();
 const formData = reactive<Author>({
   id:"",
   name:"",
-  address:""
+  address:"",
+  detail:"",
 });
 
 const errorMessage = ref<string>("");

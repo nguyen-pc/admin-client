@@ -160,6 +160,7 @@ const formData = reactive<Book>({
   cover:""
 });
 
+
 const errorMessage = ref<string>("");
 
 const isEdit = computed(() => !!route.params.id);
@@ -203,9 +204,10 @@ const handleFileChange = async (files: File[]) => {
     if (files.length > 0) {
       const fileData = files[0].file;
       formData.cover = fileData
-      console.log( formData.cover )
+
 
       coverPath =  formData.cover
+      console.log(coverPath)
       // const response = await bookStore.uploadCover(formData.cover)
       // coverImageUrl.value = response.imageUrl;
       // console.log("Uploaded image URL:", coverImageUrl.value);
