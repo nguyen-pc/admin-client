@@ -96,7 +96,6 @@ const fetchBorrow = async () => {
 
 onMounted(fetchBorrow);
 
-
 const filteredData = computed(() => {
   if (!query.value) {
     return borrowStore.allBorrow;
@@ -108,11 +107,19 @@ const filteredData = computed(() => {
     const username = item.user?.username?.toLowerCase() || "";
 
     // Check if either the book name or the username matches the search query
-    return (
-      bookName.includes(searchQuery) || username.includes(searchQuery)
-    );
+    return bookName.includes(searchQuery) || username.includes(searchQuery);
   });
 });
+
+const formatDate = (dateString: string) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return date.toLocaleDateString("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
 
 const renderCell = (row: any, column: any) => {
   const keys = column.dataIndex.split(".");
@@ -121,6 +128,9 @@ const renderCell = (row: any, column: any) => {
     keys.forEach((key: any) => {
       value = value[key];
     });
+    if (["borrowedDay", "estimatedReturnDate", "actualReturnDate"].includes(column.key)) {
+      return formatDate(value);
+    }
   } catch (error) {
     console.error("Error accessing value for column:", column, "row:", row);
     value = ""; // Hoặc giá trị mặc định nào đó nếu cần thiết
