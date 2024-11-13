@@ -82,6 +82,7 @@ onMounted(async () => {
     const authors = await authorStore.getAllPublisherById(route.params.id);
     formData.name = authors.name;
     formData.address = authors.address;
+    formData.detail = authors.detail;
   }
 });
 
