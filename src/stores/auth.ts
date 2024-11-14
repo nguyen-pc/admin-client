@@ -85,7 +85,7 @@ export const useAuthStore = defineStore('auth', {
 
     async login(payload: LoginData) {
       try {
-        const { data } = await useApi().post(`/api/auth/login`, payload)
+        const { data } = await useApi().post(`/api/auth/login_admin`, payload)
         this.accessToken = data.access_token
         await this.getUser()
         return data

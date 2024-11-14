@@ -86,7 +86,7 @@ async function submit(){
 }
 
 .background {
-  background-image: url("background_login.jpg");
+  background-image: url("background_login.jpg") !important;
   background-size: cover;
   background-position: center; /* Center the image */
   background-repeat: no-repeat;
